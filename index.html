@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07111c" />
+    <title>People Atlas — Interactive Wealth Map</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script src="https://accounts.google.com/gsi/client" async defer onload="window.initializeGoogleSignIn?.()"></script>
+    <style>
+      :root{color-scheme:light;--ink:#101c29;--muted:#71808d;--paper:#f4f6f5;--line:#dce2e1;--navy:#07111c;--red:#ef3022;--orange:#f39a27;--green:#2da76e}
+      *{box-sizing:border-box}html,body{margin:0;width:100%;min-height:100%;font-family:"DM Sans",sans-serif;color:var(--ink)}body{background:var(--paper)}button,input{font:inherit}button{cursor:pointer} [hidden]{display:none!important}
+      .login-view{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(ellipse at 51% 45%,#15293a 0%,#0a1724 43%,#050b12 100%);color:#f3f6f5;overflow:hidden}.login-view:before,.login-view:after{content:"";position:absolute;inset:0;pointer-events:none}.login-view:before{opacity:.2;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:54px 54px;mask-image:radial-gradient(ellipse,#000 10%,transparent 78%)}.login-grain{position:absolute;inset:0;opacity:.05;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.48'/%3E%3C/svg%3E")}.login-mark{position:absolute;top:35px;left:42px;display:flex;align-items:center;gap:11px;font:600 13px "DM Mono",monospace;letter-spacing:.08em;color:#b4c2cb}.mark-orbit{width:10px;height:10px;border:1px solid #e85b48;border-radius:50%;box-shadow:0 0 14px #ed4c3866;position:relative}.mark-orbit:after{content:"";position:absolute;inset:2px;background:#e9543f;border-radius:50%}.login-card{position:relative;width:min(460px,calc(100vw - 40px));padding:53px 54px 38px;background:rgba(12,25,37,.82);border:1px solid #ffffff20;box-shadow:0 35px 110px #0008;backdrop-filter:blur(16px)}.eyebrow{display:flex;align-items:center;gap:9px;font:500 9px "DM Mono",monospace;letter-spacing:.17em;color:#9aaab5}.eyebrow-dot{width:6px;height:6px;border-radius:50%;background:#e76049;box-shadow:0 0 10px #e76049}.login-card h1{font:600 clamp(37px,6vw,48px)/1.05 Manrope,sans-serif;letter-spacing:-.055em;margin:30px 0 16px}.login-card h1 em,.intro-row h1 em{font-style:normal;color:#f07c65}.login-copy{max-width:300px;color:#a4b0b9;font-size:14px;line-height:1.7;margin:0 0 34px}.login-divider{height:1px;background:#ffffff19;position:relative;margin:0 0 24px}.login-divider span{position:absolute;top:-7px;left:0;background:#0d1b29;padding-right:12px;color:#748491;font:9px "DM Mono",monospace;letter-spacing:.14em}.google-button{min-height:44px;display:flex;justify-content:flex-start}.google-button iframe{max-width:100%!important}.auth-message{font-size:11px;color:#8c9aa5;margin:15px 0 30px;min-height:15px}.login-foot{border-top:1px solid #ffffff17;padding-top:18px;display:flex;align-items:center;gap:8px;color:#60717f;font:8px "DM Mono",monospace;letter-spacing:.1em}.lock-icon{font-size:8px;color:#55ba87}.login-bottom{position:absolute;bottom:24px;left:42px;right:42px;display:flex;justify-content:space-between;color:#52616d;font:8px "DM Mono",monospace;letter-spacing:.13em}
+      .app-view{min-height:100vh;background:var(--paper)}.topbar{height:68px;background:#0a1723;color:#f7f8f6;display:flex;align-items:center;justify-content:space-between;padding:0 4.25vw;border-bottom:1px solid #1b2a36}.brand{display:flex;gap:11px;align-items:center;color:#f1f4f2;text-decoration:none;font:700 12px Manrope,sans-serif;letter-spacing:.13em}.brand-light{font-weight:400;color:#92a3ae}.brand-mark{display:grid;place-items:center;width:29px;height:29px;border:1px solid #d65c49;color:#ef806a;font:10px "DM Mono",monospace;letter-spacing:0}.topbar-center{font:9px "DM Mono",monospace;letter-spacing:.13em;color:#8c9ba5}.live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#5ec88b;margin-right:9px;box-shadow:0 0 9px #5ec88b}.topbar-actions{display:flex;align-items:center;gap:19px}.source-button,.icon-button{border:0;color:#aab6be;background:transparent;font:9px "DM Mono",monospace;letter-spacing:.08em}.source-icon{font-size:14px;color:#ef806a;margin-right:5px}.user-chip{height:34px;display:flex;align-items:center;gap:9px;border-left:1px solid #293844;padding-left:18px;color:#b6c0c7;font:9px "DM Mono",monospace;letter-spacing:.04em}.user-chip img{width:23px;height:23px;border-radius:50%;background:#32424f;object-fit:cover}.icon-button{font-size:15px;transform:rotate(45deg)}.workspace{max-width:1500px;margin:auto;padding:42px 4.25vw 24px}.intro-row{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:31px}.dark-eyebrow{color:#7b8991}.intro-row h1{font:600 clamp(34px,4vw,48px)/1.06 Manrope,sans-serif;letter-spacing:-.06em;margin:17px 0 0}.intro-row h1 em{color:#d85843}.intro-aside{width:285px;display:flex;gap:15px;align-items:flex-start;margin:0 1.4vw 3px 30px}.aside-rule{width:25px;height:1px;background:#db654f;flex:none;margin-top:8px}.intro-aside p{margin:0;color:#73808a;font-size:11px;line-height:1.7}.control-row{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #dce2e1;padding:18px 0 17px}.view-switcher{display:flex;gap:6px}.view-button{padding:10px 13px;border:1px solid transparent;background:transparent;color:#75828a;font:500 9px "DM Mono",monospace;letter-spacing:.06em;transition:.2s}.view-button:hover{color:#152332;background:#e9edeb}.view-button.active{background:#102131;color:#f4f6f3;border-color:#102131}.view-index{font-size:8px;color:#9ba8af;margin-right:7px}.view-button.active .view-index{color:#f07a64}.dataset-meta{display:flex;align-items:center;gap:9px;font:9px "DM Mono",monospace;color:#75818a;letter-spacing:.08em}.dataset-meta #profileCount{font-size:12px;color:#1d2b37}.meta-slash{color:#c3c9c8}.meta-separator{width:1px;height:13px;background:#ced5d3;margin:0 4px}.canvas-wrap{height:min(57vh,570px);min-height:390px;background:#e9eeec;border:1px solid #d5ddda;position:relative;overflow:hidden}.canvas-topline{position:absolute;z-index:3;top:16px;left:18px;right:18px;display:flex;justify-content:space-between;color:#67767f;font:8px "DM Mono",monospace;letter-spacing:.1em;pointer-events:none}.mono-muted{color:#a2acaf}.scene{position:absolute;inset:0;overflow:hidden}.scene>div{outline:none}.scene-message{position:absolute;z-index:5;inset:0;display:grid;place-items:center;text-align:center;padding:30px;color:#64717a;font-size:13px;line-height:1.7;background:#e9eeeced}.scene-message b{color:#172635}.canvas-corner{position:absolute;z-index:3;bottom:15px;color:#96a19f;font:8px/1.7 "DM Mono",monospace;letter-spacing:.08em;pointer-events:none}.canvas-corner span{color:#d65c49}.canvas-corner-left{left:18px}.canvas-corner-right{right:18px;text-align:right}.legend-row{height:59px;display:flex;align-items:center;gap:30px;border-bottom:1px solid #dce2e1}.legend-title{display:flex;align-items:center;gap:9px;color:#42515a;font:9px "DM Mono",monospace;letter-spacing:.09em}.legend-mark{height:9px;width:9px;border:1px solid #cb5c49;transform:rotate(45deg)}.legend-scale{display:flex;align-items:center;gap:9px;color:#89949a;font:8px "DM Mono",monospace;letter-spacing:.07em}.legend-gradient{width:94px;height:5px;background:linear-gradient(90deg,#ef3022 0%,#f39a27 48%,#2da76e 100%)}.legend-labels{display:flex;gap:16px;color:#687780;font:8px "DM Mono",monospace;letter-spacing:.03em}.swatch{display:inline-block;width:6px;height:6px;margin-right:5px;border-radius:50%}.swatch.low{background:var(--red)}.swatch.mid{background:var(--orange)}.swatch.high{background:var(--green)}.legend-note{margin-left:auto;color:#9aa4a5;font:8px "DM Mono",monospace;letter-spacing:.07em}
+      .person-card{position:relative;width:174px;height:232px;padding:0;background:#fafaf8;border:1px solid #ffffff;box-shadow:0 8px 22px #20323a18;color:#172430;overflow:hidden;cursor:pointer;transition:box-shadow .2s,filter .2s;user-select:none}.person-card:hover{box-shadow:0 14px 35px #17243038;filter:brightness(1.04);z-index:3}.card-photo{height:128px;background:#ced6d2;position:relative;overflow:hidden}.card-photo img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.82)}.card-photo:after{content:"";position:absolute;inset:35% 0 0;background:linear-gradient(transparent,#111a)}.photo-fallback,.dialog-fallback{height:100%;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,#6e8584,#364955);font:600 25px Manrope,sans-serif;letter-spacing:.08em}.dialog-fallback{font-size:35px}.card-index{position:absolute;z-index:1;top:9px;left:9px;color:#fff;font:9px "DM Mono",monospace;text-shadow:0 1px 4px #0008}.card-worth{position:absolute;right:8px;top:8px;padding:5px 6px;background:var(--worth);color:#fff;font:8px "DM Mono",monospace;letter-spacing:.02em}.card-body{padding:10px 11px 8px;position:relative}.card-name{font:700 12px/1.25 Manrope,sans-serif;letter-spacing:-.025em;height:30px;overflow:hidden}.card-subline{display:flex;justify-content:space-between;gap:5px;margin-top:6px;color:#6b7981;font:8px "DM Mono",monospace;text-transform:uppercase;letter-spacing:.035em}.card-interest{margin-top:9px;color:#34444c;font-size:9px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card-country{position:absolute;right:10px;bottom:9px;color:#98a2a3;font:8px "DM Mono",monospace}.card-rule{position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--worth)}
+      .dialog-backdrop{position:fixed;z-index:20;inset:0;background:#07111ccb;display:grid;place-items:center;padding:20px;backdrop-filter:blur(5px)}.profile-dialog,.source-dialog{position:relative;width:min(590px,100%);background:#f5f7f5;box-shadow:0 25px 80px #0006}.profile-dialog{display:grid;grid-template-columns:220px 1fr;min-height:300px}.dialog-close{position:absolute;z-index:2;top:12px;right:14px;border:0;background:#ffffffc9;color:#283945;width:29px;height:29px;font-size:20px;line-height:1}.dialog-image{background:#d5ddd8;min-height:300px}.dialog-image img{display:block;width:100%;height:100%;object-fit:cover}.dialog-content{padding:40px 27px 25px}.dialog-content h2{font:700 25px/1.1 Manrope,sans-serif;letter-spacing:-.05em;margin:22px 0 9px}.dialog-meta{color:#728088;font:10px "DM Mono",monospace;text-transform:uppercase}.dialog-networth,.dialog-interest{border-top:1px solid #dce2df;padding:14px 0;display:flex;justify-content:space-between;align-items:center;font:9px "DM Mono",monospace;color:#74818a}.dialog-networth{margin-top:22px}.dialog-networth strong{color:#172938;font-size:14px}.dialog-interest strong{font:600 11px "DM Sans",sans-serif;color:#34434b}.source-dialog{max-width:520px;padding:38px}.source-dialog h2{font:700 27px Manrope,sans-serif;letter-spacing:-.05em;margin:20px 0 10px}.source-dialog>p{font-size:12px;color:#728089;line-height:1.6;margin:0 0 22px}.source-dialog label{display:block;color:#71808a;font:9px "DM Mono",monospace;letter-spacing:.1em;margin-bottom:8px}.source-dialog input{display:block;width:100%;padding:12px 13px;border:1px solid #cdd7d3;background:#fff;color:#263641;font-size:11px;outline:none}.source-dialog input:focus{border-color:#d65c49}.source-actions{display:flex;justify-content:space-between;align-items:center;margin-top:17px}.text-button{border:0;background:transparent;color:#75838a;font:9px "DM Mono",monospace;letter-spacing:.04em;padding:10px 0}.primary-button{border:0;background:#102131;color:#fff;padding:12px 15px;font:9px "DM Mono",monospace;letter-spacing:.06em}.primary-button span{color:#f07c65;margin-left:12px}.source-message{color:#bd493a!important;min-height:15px;margin:12px 0 0!important}.source-help{border-top:1px solid #dde3e1;padding-top:15px;margin-top:8px;color:#859198;font-size:10px;line-height:1.6}.source-help b{color:#56656e;font-weight:600}
+      @media(max-width:760px){.login-mark{top:20px;left:20px}.login-card{padding:38px 29px 30px}.login-bottom{left:20px;right:20px;font-size:7px}.login-bottom span:nth-child(2){display:none}.topbar{height:60px;padding:0 17px}.topbar-center{display:none}.topbar-actions{gap:8px}.source-button{font-size:0}.source-icon{font-size:16px}.user-chip{padding-left:9px;gap:6px;font-size:8px}.icon-button{display:none}.workspace{padding:28px 16px 20px}.intro-row{display:block;padding-bottom:21px}.intro-row h1{font-size:38px}.intro-aside{width:auto;margin:18px 0 0}.control-row{display:block;padding:12px 0}.view-switcher{overflow:auto}.view-button{padding:10px 9px;white-space:nowrap;font-size:8px}.view-index{margin-right:4px}.dataset-meta{margin-top:12px}.canvas-wrap{height:56vh;min-height:350px}.canvas-topline{font-size:7px;left:11px;right:11px}.legend-row{height:auto;min-height:70px;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 0}.legend-note{display:none}.legend-labels{grid-column:1/-1;justify-content:space-between;gap:6px;font-size:7px}.legend-scale{justify-content:flex-end}.profile-dialog{grid-template-columns:120px 1fr;min-height:270px}.dialog-image{min-height:270px}.dialog-content{padding:34px 16px 18px}.dialog-content h2{font-size:19px}.source-dialog{padding:30px 22px}.source-dialog h2{font-size:24px}}
+      @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+    </style>
+  </head>
+  <body>
+    <div id="loginView" class="login-view">
+      <div class="login-grain"></div>
+      <div class="login-mark"><span class="mark-orbit"></span><span>PA</span></div>
+      <main class="login-card">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> PEOPLE ATLAS / DATA VISUALISATION</div>
+        <h1>See the people<br />behind the <em>numbers.</em></h1>
+        <p class="login-copy">An interactive map of the people, interests and net worth in your dataset.</p>
+        <div class="login-divider"><span>SECURE ACCESS</span></div>
+        <div id="googleButton" class="google-button"></div>
+        <p id="authMessage" class="auth-message" aria-live="polite">Sign in with your Google account to continue.</p>
+        <div class="login-foot"><span>GOOGLE IDENTITY</span><span class="lock-icon">●</span><span>AUTHENTICATED ACCESS</span></div>
+      </main>
+      <div class="login-bottom"><span>PEOPLE ATLAS</span><span>INTERACTIVE DATA EXPERIENCE</span><span>© 2026</span></div>
+    </div>
+
+    <div id="appView" class="app-view" hidden>
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="People Atlas home"><span class="brand-mark">PA</span><span>PEOPLE<span class="brand-light">ATLAS</span></span></a>
+        <div class="topbar-center"><span class="live-dot"></span><span id="datasetStatus">CONNECTING TO DATA</span></div>
+        <div class="topbar-actions">
+          <button id="sourceButton" class="source-button" type="button"><span class="source-icon">↗</span> DATA SOURCE</button>
+          <div class="user-chip"><img id="userAvatar" alt="" /><span id="userName">SIGNED IN</span></div>
+          <button id="signOutButton" class="icon-button" type="button" title="Sign out" aria-label="Sign out">↗</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="intro-row">
+          <div>
+            <div class="eyebrow dark-eyebrow"><span class="eyebrow-dot"></span> PEOPLE / NET WORTH / INTERESTS</div>
+            <h1>One dataset.<br /><em>Four perspectives.</em></h1>
+          </div>
+          <div class="intro-aside"><span class="aside-rule"></span><p>Rearrange the same 200 profiles across four spatial views. Drag to orbit, scroll to zoom, and select a card to inspect a profile.</p></div>
+        </section>
+
+        <section class="control-row" aria-label="Visualization controls">
+          <div class="view-switcher" role="group" aria-label="Choose layout">
+            <button class="view-button active" data-layout="table" type="button"><span class="view-index">01</span> TABLE</button>
+            <button class="view-button" data-layout="sphere" type="button"><span class="view-index">02</span> SPHERE</button>
+            <button class="view-button" data-layout="helix" type="button"><span class="view-index">03</span> DOUBLE HELIX</button>
+            <button class="view-button" data-layout="grid" type="button"><span class="view-index">04</span> GRID</button>
+          </div>
+          <div class="dataset-meta"><span id="profileCount">000</span><span class="meta-slash">/</span><span>PROFILES</span><span class="meta-separator"></span><span id="currentLayout">TABLE VIEW</span></div>
+        </section>
+
+        <section class="canvas-wrap" aria-label="Interactive profile visualization">
+          <div class="canvas-topline"><span>SPATIAL VIEWER <span class="mono-muted">/ 3D</span></span><span id="viewerHint">DRAG TO ORBIT&nbsp;&nbsp; · &nbsp;&nbsp;SCROLL TO ZOOM</span></div>
+          <div id="scene" class="scene"></div>
+          <div id="sceneMessage" class="scene-message" hidden></div>
+          <div class="canvas-corner canvas-corner-left">X <span>+</span><br />Y <span>+</span><br />Z <span>+</span></div>
+          <div class="canvas-corner canvas-corner-right">THREE.JS<br />CSS3D RENDERER</div>
+        </section>
+
+        <footer class="legend-row">
+          <div class="legend-title"><span class="legend-mark"></span><span>NET WORTH</span></div>
+          <div class="legend-scale"><span>LOW</span><span class="legend-gradient"></span><span>HIGH</span></div>
+          <div class="legend-labels"><span><i class="swatch low"></i> &lt; $100K</span><span><i class="swatch mid"></i> $100K–$200K</span><span><i class="swatch high"></i> &gt; $200K</span></div>
+          <div class="legend-note">COLOR ENCODED BY INDIVIDUAL NET WORTH</div>
+        </footer>
+      </main>
+    </div>
+
+    <div id="profileDialog" class="dialog-backdrop" hidden>
+      <section class="profile-dialog" role="dialog" aria-modal="true" aria-labelledby="dialogName">
+        <button class="dialog-close" type="button" aria-label="Close profile">×</button>
+        <div id="dialogImage" class="dialog-image"></div>
+        <div class="dialog-content"><div class="eyebrow dark-eyebrow"><span class="eyebrow-dot"></span> PROFILE DETAIL</div><h2 id="dialogName"></h2><p id="dialogMeta" class="dialog-meta"></p><div class="dialog-networth"><span>NET WORTH</span><strong id="dialogWorth"></strong></div><div class="dialog-interest"><span>INTEREST</span><strong id="dialogInterest"></strong></div></div>
+      </section>
+    </div>
+
+    <div id="sourceDialog" class="dialog-backdrop" hidden>
+      <section class="source-dialog" role="dialog" aria-modal="true" aria-labelledby="sourceTitle">
+        <button class="source-close dialog-close" type="button" aria-label="Close">×</button>
+        <div class="eyebrow dark-eyebrow"><span class="eyebrow-dot"></span> CONNECT YOUR SHEET</div>
+        <h2 id="sourceTitle">Choose a data source.</h2>
+        <p>Paste a published CSV URL to switch data sources. Reset to return to the connected People Atlas sheet.</p>
+        <label for="sheetUrl">PUBLISHED CSV URL</label><input id="sheetUrl" type="url" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv" />
+        <div class="source-actions"><button id="useLocalButton" class="text-button" type="button">RESET TO DEFAULT SHEET</button><button id="saveSourceButton" class="primary-button" type="button">SAVE &amp; LOAD <span>↗</span></button></div>
+        <p id="sourceMessage" class="source-message" aria-live="polite"></p>
+        <div class="source-help">In Google Sheets: <b>File → Share → Publish to web</b>, select the data sheet and CSV, then copy the published URL. Set access as required by your assignment.</div>
+      </section>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
