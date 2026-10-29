@@ -157,9 +157,10 @@ function makeCard(person) {
   element.setAttribute('role', 'button');
   element.setAttribute('aria-label', `${person.name}, net worth ${money(person.worth)}`);
   element.style.setProperty('--worth', worthColor(person.worth));
+  element.style.setProperty('--card-ink', person.worth >= 100000 && person.worth <= 200000 ? '#172430' : '#fff');
   const safeName = escapeHtml(person.name);
   const photo = person.photo ? `<img src="${escapeHtml(person.photo)}" alt="${safeName}" referrerpolicy="no-referrer" />` : `<div class="photo-fallback">${escapeHtml(initials(person.name))}</div>`;
-  element.innerHTML = `<div class="card-photo">${photo}<span class="card-index">${String(person.id).padStart(3, '0')}</span><span class="card-worth">${escapeHtml(money(person.worth))}</span></div><div class="card-body"><div class="card-name">${safeName}</div><div class="card-subline"><span>${escapeHtml(person.age ? `${person.age} YEARS` : 'AGE N/A')}</span><span>${escapeHtml(person.country || '—')}</span></div><div class="card-interest">${escapeHtml(person.interest)}</div><span class="card-country">PROFILE</span></div><div class="card-rule"></div>`;
+  element.innerHTML = `<div class="card-photo">${photo}<span class="card-index">${String(person.id).padStart(3, '0')}</span><span class="card-symbol">${escapeHtml(initials(person.name))}</span><span class="card-worth">${escapeHtml(money(person.worth))}</span></div><div class="card-body"><div class="card-name">${safeName}</div><div class="card-subline"><span>${escapeHtml(person.age ? `${person.age} YEARS` : 'AGE N/A')}</span><span>${escapeHtml(person.country || '—')}</span></div><div class="card-interest">${escapeHtml(person.interest)}</div><span class="card-country">PROFILE</span></div><div class="card-rule"></div>`;
   const open = () => showProfile(person);
   element.addEventListener('click', open);
   element.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); } });
@@ -218,7 +219,7 @@ function animate() {
 
 function makeLayouts(count) {
   const table = [], sphere = [], helix = [], grid = [];
-  const tableCols = 20, tableRows = 10, tableX = 224, tableY = 278;
+  const tableCols = 20, tableRows = 10, tableX = 152, tableY = 152;
   for (let i = 0; i < count; i++) {
     const col = i % tableCols, row = Math.floor(i / tableCols);
     const tablePos = new THREE.Vector3((col - (tableCols - 1) / 2) * tableX, ((tableRows - 1) / 2 - row) * tableY, 0);
@@ -250,8 +251,9 @@ function transform(layout, duration = 1700) {
     Object.assign(layouts, all);
   }
   const targets = layouts[layout];
-  const cameraZ = { table: 5200, sphere: 3400, helix: 3900, grid: 3700 }[layout];
+  const cameraZ = { table: 3000, sphere: 3400, helix: 3900, grid: 3700 }[layout];
   appState.objects.forEach((object, index) => {
+    object.element.classList.toggle('table-card', layout === 'table');
     const target = targets[index];
     new TWEEN.Tween(object.position).to({ x: target.position.x, y: target.position.y, z: target.position.z }, duration).easing(TWEEN.Easing.Exponential.InOut).start();
     new TWEEN.Tween(object.rotation).to({ x: target.rotation.x, y: target.rotation.y, z: target.rotation.z }, duration).easing(TWEEN.Easing.Exponential.InOut).start();
