@@ -5,7 +5,7 @@ import * as TWEEN from 'three/addons/libs/tween.module.js';
 
 const CONFIG = {
   // Replace with your OAuth 2.0 Web client ID from Google Cloud Console.
-  GOOGLE_CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+  GOOGLE_CLIENT_ID: '549551274358-dak6f70ms56m5dja5ks039o6pmqb6kd7.apps.googleusercontent.com',
   SHEET_CSV_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vToOhRXajZQ5rGoVAysWwQNWnmfDv8Op3aWHmtkydi4SS0Ul-3pNoo9N9ngEz6GR8mpmbjB1I0LvlBZ/pub?gid=513770450&single=true&output=csv',
   EXPECTED_PROFILE_COUNT: 200
 };
