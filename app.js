@@ -222,7 +222,15 @@ function makeLayouts(count) {
   const tableCols = 20, tableRows = 10, tableX = 152, tableY = 152;
   for (let i = 0; i < count; i++) {
     const col = i % tableCols, row = Math.floor(i / tableCols);
-    const tablePos = new THREE.Vector3((col - (tableCols - 1) / 2) * tableX, ((tableRows - 1) / 2 - row) * tableY, 0);
+    // Keep exactly 20 columns by 10 rows, with subtle group gutters and staggered periods.
+    const familyGap = Math.floor(col / 5) * 8;
+    const periodGap = Math.floor(row / 2) * 12;
+    const rowStagger = row % 2 ? 6 : 0;
+    const tablePos = new THREE.Vector3(
+      (col - (tableCols - 1) / 2) * tableX + familyGap + rowStagger,
+      ((tableRows - 1) / 2 - row) * tableY + periodGap,
+      0
+    );
     table.push({ position: tablePos, rotation: new THREE.Euler(0, 0, 0) });
 
     const phi = Math.acos(-1 + (2 * i) / count);
